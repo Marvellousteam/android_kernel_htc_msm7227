@@ -619,7 +619,7 @@ try_again:
 		 * in the whole kernel symbol list.
 		 */
 		if ((long long)al->addr < 0 &&
-		    cpumode == PERF_RECORD_MISC_KERNEL &&
+		    cpumode == PERF_RECORD_MISC_USER &&
 		    machine && mg != &machine->kmaps) {
 			mg = &machine->kmaps;
 			goto try_again;

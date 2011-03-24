@@ -1052,6 +1052,8 @@ static int dso__load_sym(struct dso *self, struct map *map, const char *name,
 				if (curr_dso == NULL)
 					goto out_elf_end;
 				curr_dso->kernel = self->kernel;
+				curr_dso->long_name = self->long_name;
+				curr_dso->long_name_len = self->long_name_len;
 				curr_map = map__new2(start, curr_dso,
 						     map->type);
 				if (curr_map == NULL) {
@@ -1684,6 +1686,7 @@ static int dso__load_vmlinux(struct dso *self, struct map *map,
 	if (fd < 0)
 		return -1;
 
+	dso__set_long_name(self, (char *)vmlinux);
 	dso__set_loaded(self, map->type);
 	err = dso__load_sym(self, map, vmlinux, fd, filter, 0);
 	close(fd);
