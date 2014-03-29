@@ -31,7 +31,7 @@ obj-$(CONFIG_CPU_FREQ_GOV_SMOOTH)          += cpufreq_smooth.o
 obj-$(CONFIG_CPU_FREQ_GOV_HYPER)           += cpufreq_hyper.o
 obj-$(CONFIG_CPU_FREQ_GOV_SLEEPY)          += cpufreq_sleepy.o
 obj-$(CONFIG_CPU_FREQ_GOV_SUPERBAD)          += cpufreq_superbad.o
-obj-$(CONFIG_CPU_FREQ_GOV_INTELLIACTIVE)+= cpufreq_intelliactive.o
 
 # CPUfreq cross-arch helpers
 obj-$(CONFIG_CPU_FREQ_TABLE)		+= freq_table.o
+
