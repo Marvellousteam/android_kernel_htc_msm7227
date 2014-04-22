@@ -471,7 +471,6 @@ static int __init do_early_param(char *param, char *val)
 		) {
 			if (p->setup_func(val) != 0)
 				printk(KERN_WARNING
-				 init=/init
 				       "Malformed early option '%s'\n", param);
 		}
 	}
