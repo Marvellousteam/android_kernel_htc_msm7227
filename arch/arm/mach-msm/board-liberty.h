@@ -30,13 +30,13 @@
 #define MSM_FB_SIZE             0x00200000
 
 #define MSM_GPU_MEM_BASE        (MSM_MEM_BASE + MSM_MEM_SIZE - MSM_MM_HEAP_SIZE)
-#define MSM_GPU_MEM_SIZE        0x00500000
+#define MSM_GPU_MEM_SIZE        0x00300000
 
 #define MSM_PMEM_MDP_BASE       MSM_GPU_MEM_BASE + MSM_GPU_MEM_SIZE
 #define MSM_PMEM_MDP_SIZE       0x01000000
 
 #define MSM_PMEM_ADSP_BASE      MSM_PMEM_MDP_BASE + MSM_PMEM_MDP_SIZE
-#define MSM_PMEM_ADSP_SIZE      0x0121B000
+#define MSM_PMEM_ADSP_SIZE      0x00C1B000
 
 #define MSM_PMEM_CAMERA_BASE    MSM_PMEM_ADSP_BASE + MSM_PMEM_ADSP_SIZE
 #define MSM_PMEM_CAMERA_SIZE    0x00800000
@@ -149,3 +149,4 @@ int __init liberty_init_keypad(void);
 int liberty_init_mmc(unsigned int sys_rev);
 int __init liberty_init_panel(void);
 #endif /* GUARD */
+
