@@ -199,33 +199,6 @@ void led_classdev_unregister(struct led_classdev *led_cdev)
 }
 EXPORT_SYMBOL_GPL(led_classdev_unregister);
 
-<<<<<<< HEAD
-=======
-void led_blink_set(struct led_classdev *led_cdev,
-		   unsigned long *delay_on,
-		   unsigned long *delay_off)
-{
-	if (led_cdev->blink_set &&
-	    !led_cdev->blink_set(led_cdev, delay_on, delay_off))
-		return;
-
-	/* blink with 1 Hz as default if nothing specified */
-	if (!*delay_on && !*delay_off)
-		*delay_on = *delay_off = 500;
-
-	led_set_software_blink(led_cdev, *delay_on, *delay_off);
-}
-EXPORT_SYMBOL(led_blink_set);
-
-void led_brightness_set(struct led_classdev *led_cdev,
-			enum led_brightness brightness)
-{
-	led_stop_software_blink(led_cdev);
-	led_cdev->brightness_set(led_cdev, brightness);
-}
-EXPORT_SYMBOL(led_brightness_set);
-
->>>>>>> bb0ee3f... led_class: fix typo in blink API
 static int __init leds_init(void)
 {
 	leds_class = class_create(THIS_MODULE, "leds");
