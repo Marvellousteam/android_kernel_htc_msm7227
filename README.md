@@ -80,7 +80,6 @@ Credits:
 - Andreas Schneider (Cryptomilk from based)
 - eoghan2t9
 - OWLProject
-- koush
 
 ==============
-                                                by the Olivier K. [Based on CRYPTOMILK/OWLProject Kernel]
+                                                by the MarvellousTeam [Based on CRYPTOMILK/OWLProject Kernel]

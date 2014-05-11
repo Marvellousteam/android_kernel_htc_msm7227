@@ -1,8 +1,5 @@
 #!/bin/bash
 
-mkdir ../modules
-mkdir ../out
-
 # Colorize Scripts
 red=$(tput setaf 1) # red
 grn=$(tput setaf 2) # green
@@ -20,7 +17,6 @@ bldpnk=${txtbld}$(tput bold ; tput setaf 5) # pink
 bldcya=${txtbld}$(tput setaf 6) # cyan
 txtrst=$(tput sgr0) # Reset
 
-ZIPFILENAME=./AureliusKernel-$TIMESTAMP-htc-msm7227-BETA0.zip
 TOOLCHAIN="/home/olivier/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi"
 KERNEL_DIR="/home/olivier/marvel/kernel"
 MODULES_DIR="/home/olivier/marvel/modules"
@@ -47,12 +43,4 @@ echo "${bldcya}Compilation successful! Total time elapsed: ${txtrst}${cya}$(echo
 else
 res2=$(date +%s.%N)
 echo "${bldred}Compilation failed! Fix the errors! ${txtrst} ${bldcya}Total time elapsed: ${txtrst}${cya}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
-
-echo "${bldcya}Creating a flashable zip${txtrst}"
-cp arch/arm/boot/zImage AnyKernel/kernel
-cp ../modules AnyKernel/system/lib/modules
-cd AnyKernel
-zip -r $ZIPFILENAME ./META-INF
-zip -r $ZIPFILENAME ./system
-zip -r $ZIPFILENAME ./kernel
 fi
