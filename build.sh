@@ -51,6 +51,7 @@ echo "${bldred}Compilation failed! Fix the errors! ${txtrst} ${bldcya}Total time
 echo "${bldcya}Creating a flashable zip${txtrst}"
 cp arch/arm/boot/zImage AnyKernel/kernel
 cp ../modules AnyKernel/system/lib/modules
+rm AnyKernel/system/lib/modules/placeholder
 cd AnyKernel
 zip -r $ZIPFILENAME ./META-INF
 zip -r $ZIPFILENAME ./system
