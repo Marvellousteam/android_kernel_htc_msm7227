@@ -1,0 +1,59 @@
+#!/bin/bash
+
+TIMESTAMP=`date +"%Y%m%d"`
+TIMESTAMP_INFO=`date +"%d-%m-%Y"`
+ZIPFILENAME=./AureliusKernel-$TIMESTAMP-htc-msm7227-BETA0.zip
+
+echo "Creating a flashable zip"
+cp arch/arm/boot/zImage AnyKernel/kernel
+cp ../modules/* AnyKernel/system/lib/modules
+rm AnyKernel/system/lib/modules/placeholder
+cd AnyKernel
+
+function make_updater_script(){
+
+#headers
+cat << EOF > updater-script
+ui_print("================================");
+ui_print("         AureliusKernel         ");
+ui_print("");
+ui_print("           by Olivier           ");
+ui_print("");
+ui_print("     Build date: $TIMESTAMP_INFO    ");
+ui_print("================================");
+ui_print("");
+ui_print("");
+ui_print("");
+EOF
+
+#extract files
+cat << EOF >> updater-script
+ui_print("|> Mounting...");
+mount("MTD", "system", "/system");
+ui_print("|> Extracting system files...");
+package_extract_dir("system", "/system");
+unmount("/system");
+ui_print("|> Extracting kernel files...");
+package_extract_dir("kernel", "/tmp");
+ui_print("|> Installing kernel...");
+set_perm(0, 0, 0777, "/tmp/dump_image");
+set_perm(0, 0, 0777, "/tmp/mkbootimg.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+run_program("/tmp/dump_image", "boot", "/tmp/boot.img");
+run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
+run_program("/tmp/mkbootimg.sh");
+write_raw_image("/tmp/newboot.img", "boot");
+ui_print("Done. Enjoy!");
+
+EOF
+
+mv -f updater-script ./META-INF/com/google/android/updater-script
+
+}
+
+make_updater_script
+zip -r $ZIPFILENAME ./META-INF
+zip -r $ZIPFILENAME ./system
+zip -r $ZIPFILENAME ./kernel
+mv *.zip ../../out
