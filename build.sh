@@ -31,8 +31,15 @@ rm $ZIMAGE
 rm $MODULES_DIR/*
 fi
 res1=$(date +%s.%N)
-echo "${bldpnk}Starting the build${txtrst}"
-script -q ~/kernel.log -c "make ARCH=arm CROSS_COMPILE=$TOOLCHAIN- cyanogen_msm7227_defconfig;make ARCH=arm CROSS_COMPILE=$TOOLCHAIN- -j8"
+echo "${bldyel}Do you want to build a JellyBean or a KitKat kernel? (jb/kk)${txtrst}"
+read answer
+if [ "$answer" = "jb" -o "$answer" = "JB" ]; then
+echo "${bldblu}Starting the build (JellyBean kernel)${txtrst}"
+script -q ~/kernel.log -c "make ARCH=arm CROSS_COMPILE=$TOOLCHAIN- cyanogen_msm7227_jb-defconfig;make ARCH=arm CROSS_COMPILE=$TOOLCHAIN- -j8"
+else
+echo "${bldpnk}Starting the build (KitKat kernel)${txtrst}"
+script -q ~/kernel.log -c "make ARCH=arm CROSS_COMPILE=$TOOLCHAIN- cyanogen_msm7227_kk-defconfig;make ARCH=arm CROSS_COMPILE=$TOOLCHAIN- -j8"
+fi
 if [ -a $KERNEL_DIR/arch/arm/boot/zImage ];
 then
 echo "Copying modules"
@@ -47,13 +54,4 @@ echo "${bldcya}Compilation successful! Total time elapsed: ${txtrst}${cya}$(echo
 else
 res2=$(date +%s.%N)
 echo "${bldred}Compilation failed! Fix the errors! ${txtrst} ${bldcya}Total time elapsed: ${txtrst}${cya}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
-
-echo "${bldcya}Creating a flashable zip${txtrst}"
-cp arch/arm/boot/zImage AnyKernel/kernel
-cp ../modules AnyKernel/system/lib/modules
-rm AnyKernel/system/lib/modules/placeholder
-cd AnyKernel
-zip -r $ZIPFILENAME ./META-INF
-zip -r $ZIPFILENAME ./system
-zip -r $ZIPFILENAME ./kernel
 fi
