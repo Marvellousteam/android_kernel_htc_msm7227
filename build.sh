@@ -47,13 +47,4 @@ echo "${bldcya}Compilation successful! Total time elapsed: ${txtrst}${cya}$(echo
 else
 res2=$(date +%s.%N)
 echo "${bldred}Compilation failed! Fix the errors! ${txtrst} ${bldcya}Total time elapsed: ${txtrst}${cya}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
-
-echo "${bldcya}Creating a flashable zip${txtrst}"
-cp arch/arm/boot/zImage AnyKernel/kernel
-cp ../modules AnyKernel/system/lib/modules
-rm AnyKernel/system/lib/modules/placeholder
-cd AnyKernel
-zip -r $ZIPFILENAME ./META-INF
-zip -r $ZIPFILENAME ./system
-zip -r $ZIPFILENAME ./kernel
 fi
