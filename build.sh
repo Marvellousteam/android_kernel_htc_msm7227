@@ -25,11 +25,25 @@ TOOLCHAIN="/home/olivier/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eab
 KERNEL_DIR="/home/olivier/marvel/kernel"
 MODULES_DIR="/home/olivier/marvel/modules"
 ZIMAGE="/home/olivier/marvel/kernel/arch/arm/boot/zImage"
-if [ -a $KERNEL_DIR/arch/arm/boot/zImage ];
-then
+
+echo "${bldcya}Do you want fetch the latest changes? ${txtrst} [y/n]"
+read syncup
+
+if [ "syncup" == "y" ]; then
+echo "${bldcya}Syncing latest changes ${txtrst}"
+git pull
+fi
+
+echo "${bldcya}Do you want to clean up? ${txtrst} [y/n]"
+read cleanup
+
+if [ "$cleanup" == "y" ]; then
+echo "${bldcya}Cleaning up ${txtrst}"
+make clean mrproper
 rm $ZIMAGE
 rm $MODULES_DIR/*
 fi
+
 res1=$(date +%s.%N)
 echo "${bldpnk}Starting the build${txtrst}"
 script -q ~/kernel.log -c "make ARCH=arm CROSS_COMPILE=$TOOLCHAIN- cyanogen_msm7227_defconfig;make ARCH=arm CROSS_COMPILE=$TOOLCHAIN- -j8"
