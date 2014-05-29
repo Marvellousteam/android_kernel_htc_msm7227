@@ -2,7 +2,7 @@
 
 TIMESTAMP=`date +"%Y%m%d"`
 TIMESTAMP_INFO=`date +"%d-%m-%Y"`
-ZIPFILENAME=./AureliusKernel-$TIMESTAMP-htc-msm7227-BETA0.zip
+ZIPFILENAME=./AureliusKernel-$TIMESTAMP-htc-msm7227-BETA1.zip
 
 echo "Creating a flashable zip"
 cp arch/arm/boot/zImage AnyKernel/kernel
@@ -29,7 +29,7 @@ EOF
 #extract files
 cat << EOF >> updater-script
 ui_print("|> Mounting...");
-mount("MTD", "system", "/system");
+mount("yaffs2", "MTD", "system", "/system");
 ui_print("|> Extracting system files...");
 package_extract_dir("system", "/system");
 unmount("/system");
