@@ -43,7 +43,7 @@ echo "${bldcya}How many cores do you want to use for the compile (enter a number
 read cores
 
 echo "${bldcya}What device do you want to build for? [chacha/cyanogen_msm7227/icong] ${txtrst}"
-echo "${bldcya}NOTE: HTC ChaCha = chacha; HTC Aria/Wildfire S = cyanogen_msm7227; HTC Salsa = icong! ${txtrst} [y/n]"
+echo "${bldcya}NOTE: HTC ChaCha = chacha; HTC Aria/Wildfire S = cyanogen_msm7227; HTC Salsa = icong! ${txtrst}"
 read PRODUCT
 
 # Make clean
