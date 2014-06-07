@@ -103,5 +103,8 @@ res2=$(date +%s.%N)
 echo "${bldcya}Compilation successful! Total time elapsed: ${txtrst}${cya}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
 else
 res2=$(date +%s.%N)
-echo "${bldred}Compilation failed! Don't blame Olivier. ${txtrst} ${bldcya}Total time elapsed: ${txtrst}${cya}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
+echo "${bldred}Compilation failed! Don't blame me, $NAME. ${txtrst}"
+echo "${bldred}You may want to try {txtrst} ${bldpur}make -j$cores $PRODUCT_defconfig${txtrst}!"
+echo "${bldblu}If that doesn't work either, contact Olivier please.${txtrst}!"
+echo "${bldcya}Total time elapsed: ${txtrst}${cya}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
 fi
