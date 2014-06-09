@@ -22,6 +22,9 @@ TOOLCHAIN="/home/olivier/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eab
 KERNEL_DIR="/home/olivier/marvel/kernel"
 MODULES_DIR="/home/olivier/marvel/modules"
 ZIMAGE="/home/olivier/marvel/kernel/arch/arm/boot/zImage"
+VERSION="1.0"
+TIMESTAMP=`date +"%Y%m%d"`
+TIMESTAMP_INFO=`date +"%A, %d %B %Y"`
 
 # Ask some questions
 echo "${bldcya}What's your name?${txtrst}"
@@ -39,12 +42,17 @@ fi
 echo "${bldcya}Do you want to clean up? ${txtrst} [y/n]"
 read cleanup
 
-echo "${bldcya}How many cores do you want to use for the compile (enter a number)? ${txtrst}"
+echo "${bldcya}How many threads do you want to use for the compilation (enter a number)? ${txtrst}"
 read cores
 
 echo "${bldcya}What device do you want to build for? [chacha/cyanogen_msm7227/icong] ${txtrst}"
 echo "${bldcya}NOTE: HTC ChaCha = chacha; HTC Aria/Wildfire S = cyanogen_msm7227; HTC Salsa = icong! ${txtrst}"
 read PRODUCT
+
+ZIPFILENAME=./ak-$VERSION-$TIMESTAMP-$PRODUCT.zip
+
+echo "${bldcya}Do you want to build a flashable ZIP as well? ${txtrst} [y/n]"
+read anykernel
 
 # Make clean
 if [ "$cleanup" == "y" ]; then
@@ -78,14 +86,6 @@ echo -ne '========================================================> Done.\r'
 echo -ne '\n'
 fi
 
-# Moar defines
-if [ "NAME" == "Olivier" ]; then
-ZIPFILENAME=./AureliusKernel-$TIMESTAMP-htc-$PRODUCT-OFFICIAL.zip
-else
-ZIPFILENAME=./AureliusKernel-$TIMESTAMP-htc-$PRODUCT-UNOFFICIAL.zip
-fi
-
-
 # Start the fun
 res1=$(date +%s.%N)
 echo "${bldpnk}Starting the build${txtrst}"
@@ -107,4 +107,61 @@ echo "${bldred}Compilation failed! Don't blame me, $NAME. ${txtrst}"
 echo "${bldred}You may want to try {txtrst} ${bldpur}make -j$cores $PRODUCT_defconfig${txtrst}!"
 echo "${bldblu}If that doesn't work either, contact Olivier please.${txtrst}!"
 echo "${bldcya}Total time elapsed: ${txtrst}${cya}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
+fi
+
+if [ "$anykernel" == "y" ]; then
+echo "Creating a flashable zip"
+cp arch/arm/boot/zImage AnyKernel/kernel
+cp ../modules/* AnyKernel/system/lib/modules
+rm AnyKernel/system/lib/modules/placeholder
+cd AnyKernel
+
+function make_updater_script(){
+
+#misc stuff
+cat << EOF > updater-script
+ui_print("================================");
+ui_print("         AureliusKernel         ");
+ui_print("");
+ui_print("           by Olivier           ");
+ui_print("");
+ui_print("     Build date: $TIMESTAMP_INFO    ");
+ui_print("================================");
+ui_print("");
+ui_print("");
+ui_print("");
+EOF
+
+#extract files
+cat << EOF >> updater-script
+ui_print("|> Mounting...");
+mount("yaffs2", "MTD", "system", "/system");
+ui_print("|> Extracting system files...");
+package_extract_dir("system", "/system");
+unmount("/system");
+ui_print("|> Extracting kernel files...");
+package_extract_dir("kernel", "/tmp");
+ui_print("|> Installing kernel...");
+set_perm(0, 0, 0777, "/tmp/dump_image");
+set_perm(0, 0, 0777, "/tmp/mkbootimg.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+run_program("/tmp/dump_image", "boot", "/tmp/boot.img");
+run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
+run_program("/tmp/mkbootimg.sh");
+write_raw_image("/tmp/newboot.img", "boot");
+ui_print("Done. Enjoy!");
+
+EOF
+
+mv -f updater-script ./META-INF/com/google/android/updater-script
+
+}
+
+make_updater_script
+zip -r $ZIPFILENAME ./META-INF
+zip -r $ZIPFILENAME ./system
+zip -r $ZIPFILENAME ./kernel
+mv *.zip ../../out;
+echo "Package complete: ../out/$ZIPFILENAME"
 fi
