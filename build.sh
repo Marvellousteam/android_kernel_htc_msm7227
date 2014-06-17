@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#Stop script if something is broken
+set -e
+
 # Colorize Scripts
 red=$(tput setaf 1) # red
 grn=$(tput setaf 2) # green
@@ -22,7 +25,7 @@ TOOLCHAIN="/home/olivier/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eab
 KERNEL_DIR="/home/olivier/marvel/kernel"
 MODULES_DIR="/home/olivier/marvel/modules"
 ZIMAGE="/home/olivier/marvel/kernel/arch/arm/boot/zImage"
-VERSION="1.0"
+VERSION="1.1"
 TIMESTAMP=`date +"%Y%m%d"`
 TIMESTAMP_INFO=`date +"%A, %d %B %Y"`
 
@@ -45,11 +48,29 @@ read cleanup
 echo "${bldcya}How many threads do you want to use for the compilation (enter a number)? ${txtrst}"
 read cores
 
-echo "${bldcya}What device do you want to build for? [chacha/cyanogen_msm7227/icong] ${txtrst}"
-echo "${bldcya}NOTE: HTC ChaCha = chacha; HTC Aria/Wildfire S = cyanogen_msm7227; HTC Salsa = icong! ${txtrst}"
-read PRODUCT
+echo "${bldcya}What device do you want to build for? [1/2/3/4] ${txtrst}"
+echo "${bldcya} 1 - HTC Aria ${txtrst}"
+echo "${bldcya} 2 - HTC ChaCha ${txtrst}"
+echo "${bldcya} 3 - HTC Salsa ${txtrst}"
+echo "${bldcya} 4 - HTC Wildfire S ${txtrst}"
+read prod
+if [ "$prod" = "1" -o "$answer" = "4" ]; then
+export PRODUCT=cyanogen_msm7227
+export PRODUCTCODENAME=msm7227
+export PRODUCTNAME=HTC Aria and Wildfire S
+fi
+if [ "$prod" = "2" ]; then
+export PRODUCT=chacha
+export PRODUCTCODENAME=$PRODUCT
+export PRODUCTNAME=HTC ChaCha
+fi
+if [ "$prod" = "3" ]; then
+export PRODUCT=icong
+export PRODUCTCODENAME=$PRODUCT
+export PRODUCTNAME=HTC Salsa
+fi
 
-ZIPFILENAME=./ak-$VERSION-$TIMESTAMP-$PRODUCT.zip
+ZIPFILENAME=./ak-$VERSION-$TIMESTAMP-$PRODUCTCODENAME.zip
 
 echo "${bldcya}Do you want to build a flashable ZIP as well? ${txtrst} [y/n]"
 read anykernel
@@ -123,9 +144,11 @@ cat << EOF > updater-script
 ui_print("================================");
 ui_print("         AureliusKernel         ");
 ui_print("");
+ui_print("        for $PRODUCTNAME       ");
+ui_print("");
 ui_print("           by Olivier           ");
 ui_print("");
-ui_print("     Build date: $TIMESTAMP_INFO    ");
+ui_print("  Build date: $TIMESTAMP_INFO    ");
 ui_print("================================");
 ui_print("");
 ui_print("");
