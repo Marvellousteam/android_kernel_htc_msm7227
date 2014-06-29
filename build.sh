@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#Stop script if something is broken
-set -e
-
 # Colorize Scripts
 red=$(tput setaf 1) # red
 grn=$(tput setaf 2) # green
@@ -25,22 +22,13 @@ TOOLCHAIN="/home/olivier/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eab
 KERNEL_DIR="/home/olivier/marvel/kernel"
 MODULES_DIR="/home/olivier/marvel/modules"
 ZIMAGE="/home/olivier/marvel/kernel/arch/arm/boot/zImage"
-VERSION="1.1"
+VERSION="1.2"
 TIMESTAMP=`date +"%Y%m%d"`
 TIMESTAMP_INFO=`date +"%A, %d %B %Y"`
 
 # Ask some questions
-echo "${bldcya}What's your name?${txtrst}"
-read NAME
-echo "${bldcya}Alright, nice to meet you,${txtrst} ${bldgrn}$NAME!${txtrst} ${bldcya}Let me ask you a few questions before we build the kernel.${txtrst}"
-
 echo "${bldcya}Do you want fetch the latest changes? ${txtrst} [y/n]"
 read syncup
-
-if [ "syncup" == "y" ]; then
-echo "${bldcya}Syncing latest changes ${txtrst}"
-git pull
-fi
 
 echo "${bldcya}Do you want to clean up? ${txtrst} [y/n]"
 read cleanup
@@ -70,7 +58,7 @@ export PRODUCTCODENAME=$PRODUCT
 export PRODUCTNAME=HTC Salsa
 fi
 
-ZIPFILENAME=./ak-$VERSION-$TIMESTAMP-$PRODUCTCODENAME.zip
+ZIPFILENAME=./lk-$VERSION-$TIMESTAMP-$PRODUCTCODENAME.zip
 
 echo "${bldcya}Do you want to build a flashable ZIP as well? ${txtrst} [y/n]"
 read anykernel
@@ -107,6 +95,11 @@ echo -ne '========================================================> Done.\r'
 echo -ne '\n'
 fi
 
+if [ "$syncup" == "y" ]; then
+echo "${bldcya}Fetching latest changes ${txtrst}"
+git pull
+fi
+
 # Start the fun
 res1=$(date +%s.%N)
 echo "${bldpnk}Starting the build${txtrst}"
@@ -124,7 +117,7 @@ res2=$(date +%s.%N)
 echo "${bldcya}Compilation successful! Total time elapsed: ${txtrst}${cya}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
 else
 res2=$(date +%s.%N)
-echo "${bldred}Compilation failed! Don't blame me, $NAME. ${txtrst}"
+echo "${bldred}Compilation failed! Don't blame me, $USER. ${txtrst}"
 echo "${bldred}You may want to try {txtrst} ${bldpur}make -j$cores $PRODUCT_defconfig${txtrst}!"
 echo "${bldblu}If that doesn't work either, contact Olivier please.${txtrst}!"
 echo "${bldcya}Total time elapsed: ${txtrst}${cya}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}"
@@ -142,13 +135,14 @@ function make_updater_script(){
 #misc stuff
 cat << EOF > updater-script
 ui_print("================================");
-ui_print("         AureliusKernel         ");
+ui_print("         =LinzKernel=       ");
 ui_print("");
-ui_print("        for $PRODUCTNAME       ");
+ui_print("        for $PRODUCTNAME  ");
 ui_print("");
-ui_print("           by Olivier           ");
+ui_print("           by Olivier     ");
 ui_print("");
-ui_print("  Build date: $TIMESTAMP_INFO    ");
+ui_print("Build date:");
+ui_print("$TIMESTAMP_INFO");
 ui_print("================================");
 ui_print("");
 ui_print("");
