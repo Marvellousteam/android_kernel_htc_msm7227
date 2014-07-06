@@ -58,7 +58,7 @@ export PRODUCTCODENAME=$PRODUCT
 export PRODUCTNAME=HTC Salsa
 fi
 
-ZIPFILENAME=./lk-$VERSION-$TIMESTAMP-$PRODUCTCODENAME.zip
+ZIPFILENAME=./hodor-$VERSION-$TIMESTAMP-msm7227.zip
 
 echo "${bldcya}Do you want to build a flashable ZIP as well? ${txtrst} [y/n]"
 read anykernel
@@ -135,9 +135,9 @@ function make_updater_script(){
 #misc stuff
 cat << EOF > updater-script
 ui_print("================================");
-ui_print("         =LinzKernel=       ");
+ui_print("         =HodorKernel=       ");
 ui_print("");
-ui_print("        for $PRODUCTNAME  ");
+ui_print("        for HTC Wildfire S  ");
 ui_print("");
 ui_print("           by Olivier     ");
 ui_print("");
